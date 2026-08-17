@@ -76,7 +76,7 @@ artifact/**/CERTIFICATE_FORMAT.md
 
 ## Paper
 
-The manuscript and its source remain copyright © 2026 [YOUR NAME],
+The manuscript and its source remain copyright © 2026 Yihan Zhuge,
 all rights reserved unless a later publication or archival record states
 otherwise:
 
