@@ -2,7 +2,7 @@
 
 This repository contains the proof materials and computational artifact for the following computer-assisted result.
 
-> **Theorem.** Every simple cubic bipartite graph on at most 68 vertices contains a cycle of length \(4\), \(8\), or \(16\).
+> **Theorem.** Every simple cubic bipartite graph on at most 68 vertices contains a cycle of length $4$, $8$, or $16$.
 
 Equivalently,
 
@@ -14,13 +14,13 @@ Equivalently,
 
 ## Status
 
-The mathematical reduction, restricted-growth coverage argument, and the correctness of the \(C_8\) and \(C_{16}\) pruning oracles have been separately audited.
+The mathematical reduction, restricted-growth coverage argument, and the correctness of the $C_8$ and $C_{16}$ pruning oracles have been separately audited.
 
 The cap-34 exhaustive search has also been encoded as a static certificate. The certificate has been verified in a fresh Ubuntu 24.04 / GCC 13.3.0 environment.
 
 The two rooted searches certify:
 
-| Root orbit | States | Attempted proposals | Structural rejections | \(C_8\) rejections | \(C_{16}\) rejections | Completions |
+| Root orbit | States | Attempted proposals | Structural rejections | $C_8$ rejections | $C_{16}$ rejections | Completions |
 |---|---:|---:|---:|---:|---:|---:|
 | 1 | 23,143 | 2,972,750 | 180,011 | 1,424,785 | 1,344,812 | **0** |
 | 2 | 202,602 | 25,227,209 | 1,432,521 | 15,207,779 | 8,384,308 | **0** |
@@ -36,15 +36,15 @@ The remaining provenance caveat is described in [Reproducibility and provenance]
 
 The Erdős–Gyárfás conjecture asks whether every finite simple graph of minimum degree at least three contains a cycle whose length is a power of two.
 
-For cubic bipartite graphs, Julius Tranquilli proved that every such graph on at most 58 vertices contains a \(C_4\), \(C_8\), or \(C_{16}\), giving a 60-vertex lower bound for a counterexample.
+For cubic bipartite graphs, Julius Tranquilli proved that every such graph on at most 58 vertices contains a $C_4$, $C_8$, or $C_{16}$, giving a 60-vertex lower bound for a counterexample.
 
-This repository extends the same triangle-rooted restricted-growth framework from a point cap of \(29\) to a point cap of \(34\).
+This repository extends the same triangle-rooted restricted-growth framework from a point cap of $29$ to a point cap of $34$.
 
-The corresponding Levi graph has twice as many vertices, so cap \(34\) covers cubic bipartite graphs on at most
+The corresponding Levi graph has twice as many vertices, so cap $34$ covers cubic bipartite graphs on at most
 
-\[
+$$
 2\cdot 34=68
-\]
+$$
 
 vertices.
 
@@ -56,69 +56,79 @@ The argument has four logically separate parts.
 
 ### 1. Incidence reduction
 
-Let \(G=(X,Y;E)\) be a connected cubic bipartite graph.
+Let $G=(X,Y;E)$ be a connected cubic bipartite graph.
 
 Since
 
-\[
+$$
 3|X|=|E|=3|Y|,
-\]
+$$
 
-we have \(|X|=|Y|=v\). Taking the neighborhoods of vertices in one bipartition class gives a symmetric \(v_3\)-incidence system whose Levi graph is \(G\).
+we have $|X|=|Y|=v$.
 
-If \(G\) is \(C_4\)-free, the incidence system is linear.
+Taking the neighborhoods of vertices in one bipartition class gives a symmetric $v_3$-incidence system whose Levi graph is $G$.
 
-In a linear incidence system, a Berge cycle of length \(k\) corresponds to a simple cycle of length \(2k\) in the Levi graph. Thus
+If $G$ is $C_4$-free, the incidence system is linear.
 
-\[
+In a linear incidence system, a Berge cycle of length $k$ corresponds to a simple cycle of length $2k$ in the Levi graph. Thus
+
+$$
 C_6 \leftrightarrow \text{Berge triangle},
-\qquad
+$$
+
+$$
 C_8 \leftrightarrow \text{Berge 4-cycle},
-\qquad
+$$
+
+and
+
+$$
 C_{16} \leftrightarrow \text{Berge 8-cycle}.
-\]
+$$
 
-### 2. A \(C_6\) is forced below 70 vertices
+### 2. A $C_6$ is forced below 70 vertices
 
-Suppose a connected cubic bipartite graph \(H\) has fewer than 70 vertices and contains no \(C_4\) or \(C_8\).
+Suppose a connected cubic bipartite graph $H$ has fewer than 70 vertices and contains no $C_4$ or $C_8$.
 
-If \(H\) also contained no \(C_6\), then, since \(H\) is bipartite, its girth would be at least 10.
+If $H$ also contained no $C_6$, then, since $H$ is bipartite, its girth would be at least 10.
 
 If the girth were exactly 10, this would contradict the theorem of O'Keefe and Wong that
 
-\[
+$$
 f(3,10)=70.
-\]
+$$
 
 If the girth were at least 12, the edge-rooted cubic Moore bound would give at least
 
-\[
+$$
 2(1+2+4+8+16+32)=126
-\]
+$$
 
 vertices.
 
-Therefore every relevant connected component below 70 vertices contains a \(C_6\), hence the associated configuration contains a Berge triangle.
+Therefore every relevant connected component below 70 vertices contains a $C_6$, hence the associated configuration contains a Berge triangle.
 
 ### 3. Triangle-rooted restricted-growth coverage
 
-After normalizing a Berge triangle, there are two root orbits:
+After normalizing a Berge triangle, there are two root orbits.
 
-\[
+The first is
+
+$$
 \{0,1,3\},\quad
 \{1,2,4\},\quad
 \{0,2,5\},\quad
 \{0,4,6\},
-\]
+$$
 
-and
+and the second is
 
-\[
+$$
 \{0,1,3\},\quad
 \{1,2,4\},\quad
 \{0,2,5\},\quad
 \{0,6,7\}.
-\]
+$$
 
 The search always processes the least introduced point whose degree is below three.
 
@@ -138,40 +148,46 @@ The generator proposes all three possibilities under the restricted-growth label
 
 The degree, repeated-pair, and lexicographic filters cannot reject the target branch. Connectedness guarantees that all target points are eventually introduced.
 
-The same proof works for any point cap \(M\). The number \(29\) in the original proof is only a cap on available labels. For a target with \(v\le M\), no label outside \(0,\ldots,M-1\) is ever required.
+The same proof works for any point cap $M$. The number $29$ in the original proof is only a cap on available labels. For a target with $v\le M$, no label outside
 
-The block-count cutoff is also safe: a symmetric \(v_3\)-configuration has exactly \(v\) blocks, and the implementation tests for completion before applying the block-cap cutoff.
+$$
+0,\ldots,M-1
+$$
+
+is ever required.
+
+The block-count cutoff is also safe: a symmetric $v_3$-configuration has exactly $v$ blocks, and the implementation tests for completion before applying the block-cap cutoff.
 
 ### 4. Cycle-oracle correctness
 
-For a proposed new block \(t\):
+For a proposed new block $t$:
 
-- `creates_C8(t)` returns true exactly when the new block closes a genuine Berge 4-cycle, equivalently a simple \(C_8\) in the Levi graph;
-- `creates_C16(t)` searches for a length-14 simple path in the old Levi graph between two members of \(t\). Adding the two incidence edges through the new block then produces a simple \(C_{16}\).
+- `creates_C8(t)` returns true exactly when the new block closes a genuine Berge 4-cycle, equivalently a simple $C_8$ in the Levi graph;
+- `creates_C16(t)` searches for a length-14 simple path in the old Levi graph between two members of $t$. Adding the two incidence edges through the new block then produces a simple $C_{16}$.
 
 Thus
 
-\[
+$$
 \texttt{creates\_C8(t)}
 \iff
 \text{adding }t\text{ creates a new }C_8,
-\]
+$$
 
 and
 
-\[
+$$
 \texttt{creates\_C16(t)}
 \iff
 \text{adding }t\text{ creates a new }C_{16}.
-\]
+$$
 
 For the coverage proof, only the soundness direction is required:
 
-\[
+$$
 \texttt{oracle=true}
 \Longrightarrow
 \text{a forbidden cycle really exists}.
-\]
+$$
 
 The exhaustive cap-34 certificate then closes both rooted search trees with zero completions.
 
@@ -188,8 +204,8 @@ Instead, it reconstructs the restricted-growth proposal schedule and checks that
 A proposal is either:
 
 - rejected for a directly checkable structural reason;
-- rejected with a supplied \(C_8\) witness;
-- rejected with a supplied \(C_{16}\) witness; or
+- rejected with a supplied $C_8$ witness;
+- rejected with a supplied $C_{16}$ witness; or
 - accepted and expanded into its child state.
 
 The verifier therefore checks both:
@@ -379,9 +395,9 @@ During adversarial review, several earlier claims or formulations were found to 
 
 - an earlier attempt incorrectly treated three known 70-vertex girth-10 cubic graphs as a complete classification;
 - the present theorem was therefore deliberately restricted to graphs on at most 68 vertices;
-- the cap-\(M\) coverage argument was rewritten as a self-contained proof;
+- the cap-$M$ coverage argument was rewritten as a self-contained proof;
 - the block-count cutoff and completion order were checked explicitly;
-- the \(C_8\) and \(C_{16}\) pruning predicates were separated from the abstract coverage proof and verified independently;
+- the $C_8$ and $C_{16}$ pruning predicates were separated from the abstract coverage proof and verified independently;
 - source references were changed from the mutable `main` branch to an immutable upstream commit;
 - the cap-34 exhaustion was converted into a static certificate and checked independently.
 
