@@ -1,0 +1,12 @@
+CC0 1.0 Universal
+
+To the extent possible under law, Yihan Zhuge has waived all copyright
+and related or neighboring rights in the project-authored certificate
+streams, primary computational result tables, and retained machine
+outputs identified in LICENSES/README.md.
+
+The complete CC0 1.0 Universal legal code is available at:
+
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+SPDX-License-Identifier: CC0-1.0

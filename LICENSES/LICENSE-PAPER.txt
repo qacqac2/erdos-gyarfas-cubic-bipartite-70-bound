@@ -1,0 +1,13 @@
+Copyright © 2026 Yihan Zhuge.
+
+All rights reserved.
+
+This license applies to the manuscript and manuscript source identified
+in LICENSES/README.md.
+
+No license to redistribute modified versions of the manuscript is
+granted by this file.
+
+A later journal publication, preprint deposit, or archival release may
+be distributed under different terms. If so, the license attached to
+that specific version governs that version.
