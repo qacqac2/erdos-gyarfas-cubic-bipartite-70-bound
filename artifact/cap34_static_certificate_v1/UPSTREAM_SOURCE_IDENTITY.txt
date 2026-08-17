@@ -1,0 +1,34 @@
+Upstream repository:
+  https://github.com/floor-licker/erdos-gyarfas-cubic-bipartite
+Release:
+  v1.0.0
+Release URL:
+  https://github.com/floor-licker/erdos-gyarfas-cubic-bipartite/releases/tag/v1.0.0
+Immutable commit:
+  67adc92d31d5d1edfbd0a7b845dc232e31c412cd
+
+Relevant upstream SHA-256 values from the release SHA256SUMS:
+  e778648bc3d5b0a19c860bec1371a542c464652693c2cbc4c2cd5ef05f314f41  research/src/triangle_root_universal_search.cpp
+  bd04b4ac76d0e77733ff0badabcf5a89d3c20f0ad9977bbfb9733770349934a1  research/src/transcript_sha256.hpp
+  7ce7f7f1f44b74fce935ae60f09fb15c2671c44306fd2cf53eab7aef36316f5c  research/src/generate_triangle_certificate.cpp
+  f2fecc8c999ef857de3d0b225a02ff13c47cc8978d9b96ef469a62f6480855fe  research/src/verify_triangle_universal_certificate.cpp
+
+Raw immutable upstream source URL used for audit:
+  https://raw.githubusercontent.com/floor-licker/erdos-gyarfas-cubic-bipartite/67adc92d31d5d1edfbd0a7b845dc232e31c412cd/research/src/triangle_root_universal_search.cpp
+
+Important provenance note:
+  The execution environment used for this artifact could inspect the immutable
+  raw GitHub source through the web research tool but could not directly persist
+  C++ source downloads into the execution container. The local copies under src/
+  were therefore transcribed from the immutable raw source for execution.
+  They are NOT claimed to be byte-identical to the upstream files.
+
+  Functional identity of the DFS traversal was checked at SIDE=29 against the
+  immutable upstream published transcript fingerprints. Both orbit state counts,
+  candidate counts, rejection counts, and the two SHA-256 decision-transcript
+  hashes matched exactly. See logs/reproduction_v29.stdout.
+
+  A third party seeking byte-for-byte provenance should fetch the upstream files
+  directly from the commit above, verify the upstream SHA-256 values, and compile
+  that checkout with -DSIDE=34. The static certificate checker included here is
+  independent of the upstream transcript hash mechanism.

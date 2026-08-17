@@ -1,0 +1,36 @@
+Controlled cap-34 DFS reproduction
+----------------------------------
+ORBIT 1
+  states       23143
+  attempted    2972750
+  structural   180011
+  C8           1424785
+  C16          1344812
+  completions  0
+  transcript SHA-256
+    db548be2919a7f8a8b28c5ded67aa622779dd3e22192ee8a2a1e065f8c07b4c5
+
+ORBIT 2
+  states       202602
+  attempted    25227209
+  structural   1432521
+  C8           15207779
+  C16          8384308
+  completions  0
+  transcript SHA-256
+    c2e03a0f97ea3c649a5feaf4d4145b229da6f56aa31b8ebbdb8b769b18848607
+
+TOTAL
+  states       225745
+  attempted    28199959
+  structural   1612532
+  C8           16632564
+  C16          9729120
+  completions  0
+
+Cap-29 regression fingerprint (published upstream)
+--------------------------------------------------
+ORBIT 1: states=1405 candidates=106964
+  db17d0d30503871404b0027c13b05d31560bc2cea808959db4bb4d43c78117aa
+ORBIT 2: states=20088 candidates=1655404
+  74747832e0d49f0a477037c74be2b95d4ef5568c0994d42babec85ec49710a39

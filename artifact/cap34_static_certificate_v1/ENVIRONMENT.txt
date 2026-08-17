@@ -1,0 +1,9 @@
+Artifact creation UTC time: 2026-08-16T18:41:05Z
+Kernel: Linux 484db4eaa597 6.18.35 #1 SMP Mon Jul 27 18:07:50 UTC 2026 x86_64 GNU/Linux
+C++ compiler:
+c++ (Debian 14.2.0-19) 14.2.0
+Copyright (C) 2024 Free Software Foundation, Inc.
+Python: Python 3.13.5
+Build language standard: C++17
+Optimization for DFS/certificate generator/checker: -O3
+Cap: SIDE=34
