@@ -288,6 +288,47 @@ the next unused label.
 
 These invariants hold at the normalized root by construction.
 
+For completeness, we verify the only nontrivial part of the base case.
+
+After the four root blocks have been inserted, point $0$ is saturated,
+so the least deficient introduced point is $p=1$.
+
+Among the target blocks whose least point is $1$, the root already
+contains
+
+$$
+\{1,2,4\}.
+$$
+
+The remaining target block through $1$ cannot use $0$ or $3$, since
+$\{0,1,3\}$ is already a block. It also cannot use $2$ or $4$, since
+$\{1,2,4\}$ is already a block and the target configuration is linear.
+
+Consequently, if the remaining block through $1$ is
+
+$$
+\{1,q,r\},
+\qquad q<r,
+$$
+
+then necessarily
+
+$$
+q\ge 5.
+$$
+
+Hence
+
+$$
+(2,4)<_{\mathrm{lex}}(q,r),
+$$
+
+so the already inserted target blocks with least point $1$ form a
+lexicographic initial segment.
+
+Thus Invariant I2 holds at the base state. Invariants I1 and I3 are
+immediate from the normalized first-occurrence labeling.
+
 Suppose now that they hold at some later state.
 
 Because $p$ is deficient, at least one target block through $p$ has not
