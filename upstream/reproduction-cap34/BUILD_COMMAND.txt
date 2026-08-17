@@ -1,0 +1,10 @@
+g++ \
+  -O3 \
+  -std=c++17 \
+  -Wall \
+  -Wextra \
+  -Wpedantic \
+  -Werror \
+  -DSIDE=34 \
+  research/src/triangle_root_universal_search.cpp \
+  -o triangle_dfs_v34

@@ -359,33 +359,44 @@ b1b2b185c9f2ac16ea7861b351b6ca734565eee790b161837eb79de91bb633ff
 
 ## Reproducibility and provenance
 
-The mathematical coverage proof and the static certificate do not rely on an undocumented search heuristic.
-
-The cap-34 computation has also been independently reimplemented and reproduced with the same state counts and zero completions.
-
-One provenance limitation is retained explicitly:
-
-> The first cap-34 artifact construction was not produced inside its execution environment by performing a fresh byte-identical `git checkout` of the upstream commit. The local source was reconstructed from the immutable upstream source and regression-tested against the published cap-29 decision-transcript fingerprints.
-
-The cap-29 transcript hashes matched the published upstream values exactly.
-
-A highest-assurance reproduction should therefore begin from
+The upstream search source is anchored to the immutable commit
 
 ```text
 67adc92d31d5d1edfbd0a7b845dc232e31c412cd
 ```
 
-verify the upstream `SHA256SUMS`, build with
+of the upstream repository.
+
+A fresh Git clone was checked out directly at this commit. The working tree was clean, the upstream SHA-256 manifest verification succeeded, and the relevant source hashes matched the published manifest.
+
+The triangle-rooted DFS was then compiled directly from this fresh upstream checkout with
 
 ```text
 -DSIDE=34
 ```
 
-and confirm the same cap-34 counters and transcript hashes.
+using GCC 13.3.0 on Ubuntu 24.04.
 
-This is a provenance requirement, not an unresolved mathematical coverage issue.
+The run reproduced exactly the cap-34 counters:
 
----
+| Root orbit | States | Attempted | Structural | $C_8$ | $C_{16}$ | Completions |
+|---|---:|---:|---:|---:|---:|---:|
+| 1 | 23,143 | 2,972,750 | 180,011 | 1,424,785 | 1,344,812 | 0 |
+| 2 | 202,602 | 25,227,209 | 1,432,521 | 15,207,779 | 8,384,308 | 0 |
+
+and the decision-transcript hashes
+
+```text
+orbit 1:
+db548be2919a7f8a8b28c5ded67aa622779dd3e22192ee8a2a1e065f8c07b4c5
+
+orbit 2:
+c2e03a0f97ea3c649a5feaf4d4145b229da6f56aa31b8ebbdb8b769b18848607
+```
+
+Thus the cap-34 DFS result has been independently reproduced directly from the immutable upstream source.
+
+The static-certificate generator and verifier included in this repository are project-specific additions rather than upstream components. Their relationship to the upstream search is documented separately, and the resulting certificates are independently checkable without trusting the original DFS execution.
 
 ## Research and audit history
 

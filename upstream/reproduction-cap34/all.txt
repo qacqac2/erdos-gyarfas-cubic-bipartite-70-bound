@@ -1,0 +1,5 @@
+ORBIT 1 states=23143 attempted=2972750 pair=180011 c8=1424785 c16=1344812 completions=0
+TRANSCRIPT orbit=1 states=23143 candidates=2972750 sha256=db548be2919a7f8a8b28c5ded67aa622779dd3e22192ee8a2a1e065f8c07b4c5
+ORBIT 2 states=202602 attempted=25227209 pair=1432521 c8=15207779 c16=8384308 completions=0
+TRANSCRIPT orbit=2 states=202602 candidates=25227209 sha256=c2e03a0f97ea3c649a5feaf4d4145b229da6f56aa31b8ebbdb8b769b18848607
+TOTAL V=34 states=225745 attempted=28199959 pair=1612532 c8=16632564 c16=9729120 completions=0 seconds=37.739875

@@ -1,0 +1,52 @@
+Upstream repository:
+https://github.com/floor-licker/erdos-gyarfas-cubic-bipartite
+
+Reference release:
+v1.0.0
+
+Immutable upstream commit:
+67adc92d31d5d1edfbd0a7b845dc232e31c412cd
+
+Verified from a fresh Git clone.
+
+research/src/triangle_root_universal_search.cpp
+SHA-256:
+e778648bc3d5b0a19c860bec1371a542c464652693c2cbc4c2cd5ef05f314f41
+
+research/docs/completeness_argument.md
+SHA-256:
+b1b2b185c9f2ac16ea7861b351b6ca734565eee790b161837eb79de91bb633ff
+
+The upstream manifest verification completed successfully.
+
+A fresh checkout of this exact commit was compiled with SIDE=34.
+
+The resulting cap-34 search reproduced:
+
+Orbit 1
+states=23143
+attempted=2972750
+pair=180011
+c8=1424785
+c16=1344812
+completions=0
+transcript SHA-256:
+db548be2919a7f8a8b28c5ded67aa622779dd3e22192ee8a2a1e065f8c07b4c5
+
+Orbit 2
+states=202602
+attempted=25227209
+pair=1432521
+c8=15207779
+c16=8384308
+completions=0
+transcript SHA-256:
+c2e03a0f97ea3c649a5feaf4d4145b229da6f56aa31b8ebbdb8b769b18848607
+
+Total
+states=225745
+attempted=28199959
+pair=1612532
+c8=16632564
+c16=9729120
+completions=0

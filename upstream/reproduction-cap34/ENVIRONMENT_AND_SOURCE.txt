@@ -1,0 +1,11 @@
+Upstream commit:
+67adc92d31d5d1edfbd0a7b845dc232e31c412cd
+
+Compiler:
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+
+Search source SHA-256:
+e778648bc3d5b0a19c860bec1371a542c464652693c2cbc4c2cd5ef05f314f41  research/src/triangle_root_universal_search.cpp
+
+Completeness argument SHA-256:
+b1b2b185c9f2ac16ea7861b351b6ca734565eee790b161837eb79de91bb633ff  research/docs/completeness_argument.md
