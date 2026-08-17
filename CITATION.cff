@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+
+message: >
+  If you use this repository or its computational artifact,
+  please cite the accompanying paper given under preferred-citation.
+  For reproducibility-sensitive use, please also cite the exact
+  archived software release once a DOI is available.
+
+title: >
+  Reproducibility Artifact for a 70-Vertex Lower Bound for
+  Cubic Bipartite Counterexamples to the Erdős–Gyárfás Conjecture
+
+type: software
+
+authors:
+  - family-names: "Zhuge"
+    given-names: "Yihan"
+
+repository-code: "https://github.com/qacqac2/erdos-gyarfas-cubic-bipartite-70-bound"
+
+url: "https://github.com/qacqac2/erdos-gyarfas-cubic-bipartite-70-bound"
+
+keywords:
+  - "Erdős–Gyárfás conjecture"
+  - "cubic bipartite graphs"
+  - "computer-assisted proof"
+  - "exhaustive search"
+  - "static certificate"
+  - "graph theory"
+  - "incidence geometry"
+  - "Berge cycles"
+
+preferred-citation:
+  type: article
+  title: >
+    A 70-Vertex Lower Bound for Cubic Bipartite Counterexamples
+    to the Erdős–Gyárfás Conjecture
+  authors:
+    - family-names: "YOUR_FAMILY_NAME"
+      given-names: "YOUR_GIVEN_NAME"
+  year: 2026
+  status: in-preparation
