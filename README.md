@@ -11,6 +11,21 @@ Equivalently,
 **Scope.** No claim is made here about graphs on 70 or more vertices.
 
 ---
+## Status note
+
+After completing this project, the author became aware of a stronger contemporaneous computational result:
+
+https://github.com/Diaxy/erdos_gyarfas_104
+
+That project claims a 104-vertex lower bound for cubic bipartite counterexamples to the Erdős–Gyárfás conjecture, which strictly supersedes the 70-vertex lower bound established here.
+
+The present repository is therefore retained primarily as an independent and reproducible record of the weaker 70-vertex result, together with its proof documentation, exhaustive-search reproduction, and static verification artifact. No claim is made that 70 is the current best-known lower bound, and no priority claim over the stronger result is intended.
+
+The mathematical statement proved in this repository remains:
+
+> Every simple cubic bipartite graph on at most 68 vertices contains a cycle of length 4, 8, or 16.
+
+Equivalently, the computations and arguments recorded here certify a 70-vertex lower bound within the scope of this project.
 
 ## Status
 
