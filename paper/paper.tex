@@ -1,0 +1,340 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{needspace}
+\usepackage{url}
+\usepackage[
+  backend=biber,
+  style=numeric,
+  sorting=nyt,
+  giveninits=true,
+  maxbibnames=99,
+  doi=true,
+  url=true,
+  eprint=true,
+  isbn=false
+]{biblatex}
+\addbibresource{references.bib}
+\usepackage[hidelinks]{hyperref}
+
+\geometry{margin=1in}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Cfour}{C_4}
+\newcommand{\Csix}{C_6}
+\newcommand{\Ceight}{C_8}
+\newcommand{\Csixteen}{C_{16}}
+\newcommand{\vthree}{v_3}
+
+\title{A 70-Vertex Lower Bound for Cubic Bipartite Counterexamples\\
+       to the Erd\H{o}s--Gy\'arf\'as Conjecture}
+\author{Yihan Zhuge\\Zhejiang University}
+\date{17 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The Erd\H{o}s--Gy\'arf\'as conjecture asserts that every finite simple graph of minimum degree at least three contains a cycle whose length is a power of two.  For cubic bipartite graphs, Tranquilli proved by certified exhaustive computation that every graph on at most 58 vertices contains a cycle of length 4, 8, or 16, giving a 60-vertex lower bound for a cubic bipartite counterexample.  We raise this lower bound from 60 to 70 by proving that every simple cubic bipartite graph on at most 68 vertices contains a \(\Cfour\), \(\Ceight\), or \(\Csixteen\).  The proof combines the theorem of O'Keefe and Wong that every cubic graph of girth 10 has at least 70 vertices with a triangle-rooted restricted-growth enumeration of linear symmetric \(\vthree\)-configurations on at most 34 points.  We give a cap-independent coverage proof for the enumeration, prove the correctness of the \(\Ceight\)- and \(\Csixteen\)-pruning predicates, and exhaust both normalized triangle-rooted search trees at cap 34.  The two searches contain 225,745 states and examine 28,199,959 candidate extensions in total, with zero completions.  The finite exhaustion is accompanied by static certificate streams whose verifier reconstructs the complete proposal schedule and checks explicit local witnesses for rejected branches.  The cap-34 depth-first search was also rebuilt and rerun directly from a fresh checkout of the immutable upstream source, reproducing the exact counters and decision-transcript hashes.
+\end{abstract}
+
+\section{Introduction}
+
+The Erd\H{o}s--Gy\'arf\'as conjecture asks whether every finite simple graph of minimum degree at least three contains a cycle whose length is a power of two~\cite{erdos1997}.  The original minimum-degree-three problem remains open, but substantial progress is known in several complementary directions.
+
+In general graphs, Verstra\"ete proved the existence of sparse unavoidable sets of cycle lengths under a constant average-degree condition~\cite{verstraete2005}, and Liu and Montgomery later showed that sufficiently large average degree forces a cycle whose length is a power of two~\cite{liu2023}.  The conjecture is also known for several restricted graph classes.  Gao and Shan proved the \(P_8\)-free case~\cite{gao2022}, Hu and Shen extended this to \(P_{10}\)-free graphs~\cite{hu2024}, and Hegde, Sandeep and Shashank used computer assistance to reach \(P_{13}\)-free graphs~\cite{hegde2024}.  Other positive results include 3-connected cubic planar graphs~\cite{heckman2013}, cubic claw-free graphs~\cite{nowbandegani2014}, and graphs of diameter two~\cite{carr2025}.
+
+The cubic setting has a separate computational and structural history.  Markstr\"om used exhaustive computer search to show that any cubic counterexample must have at least 30 vertices~\cite{markstrom2004}.  Bensmail studied power-cycle spectra in cubic graphs, constructing arbitrarily large cubic graphs with no \(q\)-power cycles for every \(q\ge 3\) and, for \(q=2\), arbitrarily large cubic graphs whose only power-of-two cycles have length 4, or only length 8~\cite{bensmail2017}.  These results place the present cubic-bipartite finite frontier in a broader structural context.
+
+We now specialize to cubic bipartite graphs.  Since every cycle in a bipartite graph has even length, a counterexample must in particular avoid \(\Cfour\), \(\Ceight\), and \(\Csixteen\).  Tranquilli~\cite{tranquilli2026} established by certified exhaustive computation that every simple cubic bipartite graph on at most 58 vertices contains at least one of these three cycles.  Equivalently, any cubic bipartite counterexample has at least 60 vertices.
+
+The present work retains the same incidence-geometric viewpoint but pushes the triangle-rooted search to a point cap of 34.  A \(\Cfour\)-free cubic bipartite graph is the Levi graph of a linear symmetric \(\vthree\)-configuration, and a \(\Csix\) becomes a Berge triangle.  The key structural observation is that below 70 vertices a relevant connected cubic bipartite graph must contain a \(\Csix\): if it did not, its girth would be at least 10; the girth-10 case is excluded below 70 by O'Keefe and Wong~\cite{okeefe1980}, and girth at least 12 is excluded by the cubic Moore bound.  This reduces the problem to two normalized triangle-rooted search trees.
+
+\begin{theorem}\label{thm:main}
+Every simple cubic bipartite graph \(G\) with \(|V(G)|\le 68\) contains a simple cycle of length 4, 8, or 16.
+\end{theorem}
+
+\begin{corollary}\label{cor:70}
+Any simple cubic bipartite counterexample to the Erd\H{o}s--Gy\'arf\'as conjecture has at least 70 vertices.
+\end{corollary}
+
+No claim is made here about graphs on 70 or more vertices.
+
+The computer-assisted proof is deliberately separated into three logically distinct tasks.  First, every relevant target configuration must have a branch in one of the two restricted-growth search trees.  Second, the cycle-detection predicates must not falsely prune such a branch.  Third, the finite search trees must actually be exhausted.  The static certificate is designed to make this last statement checkable independently of the original depth-first search.
+
+\section{Incidence configurations and Berge cycles}\label{sec:incidence}
+
+Let \(G=(X,Y;E)\) be a connected cubic bipartite graph.  Since
+\[
+3|X|=|E|=3|Y|,
+\]
+we have \(|X|=|Y|=v\).
+
+Regard the elements of \(X\) as points.  For each \(y\in Y\), take its neighborhood \(N(y)\) as a block.  Every block contains three points and every point belongs to three blocks.  Thus one obtains a symmetric \(\vthree\)-incidence structure whose Levi graph is precisely \(G\).
+
+If \(G\) is \(\Cfour\)-free, no two distinct blocks share two points, so the incidence structure is linear.  A Berge cycle of length \(k\) consists of distinct points \(x_1,\ldots,x_k\) and distinct blocks \(B_1,\ldots,B_k\) such that \(x_i,x_{i+1}\in B_i\), with indices taken cyclically.  In a linear incidence structure, a Berge cycle of length \(k\) corresponds to a simple cycle of length \(2k\) in the Levi graph.  In particular,
+\[
+\Csix\longleftrightarrow\text{Berge triangle},\qquad
+\Ceight\longleftrightarrow\text{Berge 4-cycle},\qquad
+\Csixteen\longleftrightarrow\text{Berge 8-cycle}.
+\]
+
+\section{A triangle is forced below 70 vertices}\label{sec:triangle-forced}
+
+\begin{lemma}\label{lem:triangle-forced}
+Let \(H\) be a connected cubic bipartite graph with \(|V(H)|<70\).  If \(H\) contains no \(\Cfour\) and no \(\Ceight\), then \(H\) contains a \(\Csix\).
+\end{lemma}
+
+\begin{proof}
+Suppose, for contradiction, that \(H\) also contains no \(\Csix\).  Because \(H\) is bipartite, every cycle has even length, so the absence of cycles of lengths 4, 6 and 8 implies that the girth is at least 10.
+
+If the girth is exactly 10, the theorem of O'Keefe and Wong~\cite{okeefe1980} gives \(|V(H)|\ge 70\), a contradiction.
+
+It remains to exclude girth at least 12.  Choose an edge \(uv\).  From each endpoint grow the nonbacktracking cubic tree away from the central edge \(uv\), to depth 5.  We claim that all vertices appearing in these two rooted trees are distinct.
+
+First consider a collision within one rooted tree.  Two distinct root-to-vertex paths of lengths \(a,b\le 5\) ending at the same vertex contain a cycle of length at most
+\[
+a+b\le 10,
+\]
+contradicting girth at least 12.  Next consider a collision between the two rooted trees.  If a vertex reached at depth \(a\le 5\) from \(u\) coincides with a vertex reached at depth \(b\le 5\) from \(v\), the two root paths together with the central edge contain a cycle of length at most
+\[
+a+b+1\le 11,
+\]
+again contradicting girth at least 12.  Hence the two depth-5 trees are disjoint and internally collision-free.  Therefore
+\[
+|V(H)|\ge 2(1+2+4+8+16+32)=126,
+\]
+again a contradiction.  Thus \(H\) contains a \(\Csix\).
+\end{proof}
+
+\begin{remark}\label{rem:okeefe}
+Only the minimum-order statement \(f(3,10)=70\) is used from O'Keefe and Wong~\cite{okeefe1980}.  No classification of the 70-vertex cubic girth-10 graphs is required.
+\end{remark}
+
+\section{The two normalized triangle roots}\label{sec:roots}
+
+Let the target be a connected linear symmetric \(\vthree\)-configuration containing a Berge triangle.  Relabel the three triangle points as \(0,1,2\).  Under first-occurrence labeling the triangle blocks can be written
+\[
+\{0,1,3\},\qquad \{1,2,4\},\qquad \{0,2,5\}.
+\]
+Consider the third block through point \(0\).  Linearity prevents it from containing \(1,2,3\), or \(5\).  Among introduced labels, only \(4\) may therefore be reused.  The third block through \(0\) is consequently either \(\{0,4,6\}\) or \(\{0,6,7\}\).  Hence the two normalized roots are
+\begin{align*}
+R_1&=\bigl\{\{0,1,3\},\{1,2,4\},\{0,2,5\},\{0,4,6\}\bigr\},\\
+R_2&=\bigl\{\{0,1,3\},\{1,2,4\},\{0,2,5\},\{0,6,7\}\bigr\}.
+\end{align*}
+
+\section{Restricted-growth enumeration}\label{sec:enumeration}
+
+Fix a cap \(M\).  At every search state the introduced labels form an initial interval
+\[
+0,1,\ldots,m-1.
+\]
+The search chooses the least introduced point \(p\) whose current degree is less than three.  A new block through \(p\) is written \(\{p,q,r\}\) with \(p<q<r\).
+
+\Needspace{7\baselineskip}
+First-occurrence labeling gives exactly three possible forms:
+\begin{itemize}
+\item old--old: \(\{p,q,r\}\) with \(r<m\);
+\item old--new: \(\{p,q,m\}\);
+\item new--new: \(\{p,m,m+1\}\).
+\end{itemize}
+For fixed \(p\), candidates are considered in lexicographic order of \((q,r)\), and only candidates later than the already inserted blocks with least point \(p\) are eligible.  A candidate is rejected if it violates the degree bound, repeats a point pair, or creates a forbidden Berge 4- or 8-cycle.  The implementation uses both a point-label cap \(M\) and a block-count cap \(M\); completion is tested before the block-count cutoff.
+
+\subsection{Coverage}
+
+\begin{proposition}[Restricted-growth coverage]\label{prop:coverage}
+Let \(M\ge 8\).  Let the target be a connected linear symmetric \(\vthree\)-configuration with \(v\le M\), containing a Berge triangle and no Berge cycle of length 4 or 8.  Assume that the two cycle-rejection predicates are sound.  Then one of the two rooted restricted-growth search trees with cap \(M\) contains a completed state isomorphic to the target.
+\end{proposition}
+
+\begin{proof}
+Normalize a Berge triangle as in Section~\ref{sec:roots} and follow a branch consisting only of target blocks.  At each stage let \(0,\ldots,m-1\) be the introduced target points, and let \(p\) be the least introduced point whose current degree is less than three.  Maintain the following invariants:
+\begin{enumerate}
+\item[(I1)] every target block whose least point is smaller than \(p\) has already been inserted;
+\item[(I2)] among target blocks whose least point is \(p\), the inserted blocks form a lexicographic initial segment;
+\item[(I3)] introduced target labels are precisely \(0,\ldots,m-1\), with new points labeled in first-occurrence order.
+\end{enumerate}
+
+At the normalized root, point \(0\) is saturated and the least deficient point is \(p=1\).  The root already contains \(\{1,2,4\}\).  The remaining target block through \(1\) cannot reuse \(0\) or \(3\), because \(\{0,1,3\}\) already contains those pairs, and cannot reuse \(2\) or \(4\), because \(\{1,2,4\}\) already contains those pairs.  By linearity, if the remaining block is \(\{1,q,r\}\) with \(q<r\), then \(q\ge 5\).  Hence \((2,4)\) precedes \((q,r)\) lexicographically, establishing the nontrivial base case for (I2).  The other invariants are immediate.
+
+Assume the invariants at a later state.  Since \(p\) is deficient, choose the lexicographically first missing target block with least point \(p\), say \(B=\{p,q,r\}\).  No point smaller than \(p\) can occur in \(B\), because every such introduced point is already saturated.
+
+If both \(q\) and \(r\) are already introduced, the generator proposes the old--old block.  If exactly one is new, first-occurrence labeling gives \(\{p,q,m\}\).  If both are new, it gives \(\{p,m,m+1\}\).  Thus the target block is always among the generated candidates.
+
+Invariant (I2) prevents lexicographic pruning.  The degree filter cannot reject a target block because the target is cubic, and the repeated-pair filter cannot reject it because the target is linear.  Since the partial state together with \(B\) is a subconfiguration of the target and the target has no forbidden Berge 4- or 8-cycle, sound cycle predicates cannot reject \(B\).  The invariants are preserved after insertion, so induction produces a branch consisting entirely of target blocks.
+
+If all currently introduced points were saturated while some target point remained unseen, the introduced points and the blocks incident with them would form a nonempty proper union of Levi components, contradicting connectedness.  Hence all target points are eventually introduced.
+
+The point cap is safe because \(v\le M\) and first-occurrence labels never exceed \(v-1\).  The block cap is also safe: a symmetric \(\vthree\)-configuration has exactly \(v\) blocks.  If \(v<M\), completion occurs before the cap; if \(v=M\), the \(M\)-th target block produces the complete configuration and completion is tested before the block-count cutoff.  Thus the target reaches a completed state.
+\end{proof}
+
+\section{Correctness of the cycle-pruning predicates}\label{sec:oracles}
+
+The implementation uses two local predicates, \texttt{creates\_C8} and \texttt{creates\_C16}.  They are called only after a candidate has passed the degree and repeated-pair tests, so the enlarged incidence structure remains linear.  Proposition~\ref{prop:coverage} needs only soundness, but both predicates are exact.
+
+\subsection{The \texorpdfstring{\(C_8\)}{C8} predicate}
+
+\begin{lemma}\label{lem:c8}
+For a structurally admissible candidate block \(t\), \texttt{creates\_C8(t)} is true if and only if adding \(t\) creates a simple \(\Ceight\) containing the new block vertex.
+\end{lemma}
+
+\begin{proof}
+The predicate enumerates three pairwise distinct old blocks \(B_i,B_j,B_h\) and computes the four intersections
+\[
+p_0=t\cap B_i,\qquad p_1=B_i\cap B_j,\qquad p_2=B_j\cap B_h,\qquad p_3=B_h\cap t.
+\]
+It accepts only when all four intersections exist and are pairwise distinct.  Then
+\[
+T,p_0,B_i,p_1,B_j,p_2,B_h,p_3,T
+\]
+is a simple 8-cycle in the enlarged Levi graph.  Conversely, any new simple 8-cycle containing the new block vertex \(T\) has exactly this form with three old block vertices, and the exhaustive ordered-block enumeration finds it.
+\end{proof}
+
+\subsection{Exact length-14 paths}
+
+\begin{lemma}\label{lem:exactpath}
+For two distinct old point vertices \(x\) and \(y\), the helper routine \texttt{exact\_path} succeeds if and only if the old Levi graph contains a simple path of exactly 14 edges from \(x\) to \(y\).
+\end{lemma}
+
+\begin{proof}
+Every recursive step follows one Levi incidence edge.  The visited set contains both point and block vertices, so a successful branch cannot repeat a vertex.  Success occurs only at depth 14 at the target, and reaching the target early is rejected.  Conversely, the recursive neighbor enumeration can follow any given simple length-14 path; no vertex on such a path is blocked by the visited set and the target appears only at the final depth.
+\end{proof}
+
+\subsection{The \texorpdfstring{\(C_{16}\)}{C16} predicate}
+
+\begin{lemma}\label{lem:c16}
+For every structurally admissible candidate block \(t\), \texttt{creates\_C16(t)} is true if and only if adding \(t\) creates a simple \(\Csixteen\) containing the new block vertex.
+\end{lemma}
+
+\begin{proof}
+A candidate may contain one or two fresh points.  A fresh point has no incident block in the old Levi graph, so it cannot be an endpoint of a positive-length old path.  Likewise, if a new \(\Csixteen\) containing the new block vertex \(T\) existed, neither of the two cycle edges incident with \(T\) could use a fresh point: deleting \(T\) would leave a length-14 old path starting at that fresh point, which is impossible.  Therefore the two points of \(t\) used by any new \(\Csixteen\) are necessarily old points, and Lemma~\ref{lem:exactpath} applies.
+
+The predicate examines all three pairs of members of \(t\).  If two old members \(x,y\) are joined by a simple old path of length 14, adding the new block vertex \(T\) and the two incidence edges \(Tx,Ty\) closes that path into a simple 16-cycle.  Conversely, deleting \(T\) from any new simple 16-cycle leaves a simple old path of length 14 between the two candidate points used by the cycle.  The predicate examines that pair and succeeds.  The third point of \(t\) may occur internally on the old path; then its edge to \(T\) is merely a chord and does not invalidate the simple cycle.
+\end{proof}
+
+Lemmas~\ref{lem:c8} and~\ref{lem:c16} establish the soundness assumption required by Proposition~\ref{prop:coverage}.
+
+\section{The cap-34 exhaustion}\label{sec:cap34}
+
+We now set both the point-label and block-count cap to \(M=34\).  The exact search statistics are shown in Table~\ref{tab:counts}.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{lrrrrrr}
+\toprule
+Root & States & Attempted & Structural & \(\Ceight\) & \(\Csixteen\) & Completions\\
+\midrule
+\(R_1\) & 23,143 & 2,972,750 & 180,011 & 1,424,785 & 1,344,812 & 0\\
+\(R_2\) & 202,602 & 25,227,209 & 1,432,521 & 15,207,779 & 8,384,308 & 0\\
+\midrule
+Total & 225,745 & 28,199,959 & 1,612,532 & 16,632,564 & 9,729,120 & 0\\
+\bottomrule
+\end{tabular}
+\caption{Cap-34 triangle-rooted search statistics.}
+\label{tab:counts}
+\end{table}
+
+For each root,
+\[
+\text{attempted}=\text{structural}+\Ceight+\Csixteen+\text{expanded},
+\qquad
+\text{expanded}=\text{states}-1.
+\]
+These identities are consistency checks, not the exhaustion proof.
+
+\section{Static certification of the finite search}\label{sec:certificate}
+
+The certificate verifier reconstructs the restricted-growth proposal schedule from the current state instead of accepting a candidate list from the certificate generator.  For every expected candidate, exactly one of four outcomes must be verified: structural rejection, rejection with a \(\Ceight\) witness, rejection with a \(\Csixteen\) witness, or acceptance and recursive verification of the resulting child.
+
+A structural rejection is checked directly.  A \(\Ceight\) witness supplies three old block identifiers; the verifier reconstructs the four intersections and checks a genuine simple 8-cycle.  A \(\Csixteen\) witness supplies a pair of candidate points and seven old block identifiers; the verifier reconstructs an alternating simple path of length 14 and checks that the new block closes it into a simple 16-cycle.  For an accepted candidate, the verifier constructs the child state itself and continues recursively.  It uses the same point and block caps as the search and performs the completion test before the block-count cutoff.  Thus an omitted branch is detectable: the verifier independently knows which candidate must be handled next.
+
+\begin{proposition}[Certificate exhaustion]\label{prop:certificate}
+Fix one of the two cap-34 rooted search trees.  If the verifier accepts its complete certificate stream and reports zero solutions, then that search tree contains no completed state.
+\end{proposition}
+
+\begin{proof}
+At every verified state the verifier independently reconstructs the complete ordered candidate list.  For each candidate, either a directly checked structural or cycle witness closes the branch, or the verifier constructs and recursively checks the exact child.  Hence every prescribed branch is either validly rejected or recursively exhausted.  The cap makes the search tree finite.  Every completed state encountered during this traversal is counted by the verifier.  Therefore acceptance of the complete stream with zero solutions implies that the rooted search tree contains no completion.
+\end{proof}
+
+Both cap-34 certificate streams are accepted and both report zero solutions.  Their fixed compressed SHA-256 digests are
+\begin{align*}
+R_1:&\quad \texttt{dbc3b405bff9cadbaf5687e2eb8b6ba033255fc99d23b4bf7f49efc4d6e8b79a},\\
+R_2:&\quad \texttt{f8cd411dc6b26b5a703df811ad53c055d1e7ea75dbca2704a52bf0bbea911bd0}.
+\end{align*}
+
+\section{Proof of the main theorem}\label{sec:mainproof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Suppose that a simple cubic bipartite graph \(G\) with \(|V(G)|\le 68\) contains no cycle of length 4, 8, or 16.  Choose any connected component \(H\).  Since \(G\) is cubic and bipartite, so is \(H\), and \(|V(H)|\le 68<70\).
+
+By Lemma~\ref{lem:triangle-forced}, \(H\) contains a \(\Csix\).  Construct the incidence configuration whose Levi graph is \(H\).  Because \(H\) is \(\Cfour\)-free, the configuration is linear; the \(\Csix\) becomes a Berge triangle; and the absence of \(\Ceight\) and \(\Csixteen\) means that it has no Berge 4- or 8-cycle.  Since a connected cubic bipartite graph has equal bipartition sizes, this is a connected linear symmetric \(\vthree\)-configuration with \(v\le 34\).
+
+By Lemmas~\ref{lem:c8} and~\ref{lem:c16}, the cycle-rejection predicates satisfy the soundness hypothesis of Proposition~\ref{prop:coverage}.  Hence Proposition~\ref{prop:coverage} implies that a restricted-growth labeling of the target occurs as a completed state in one of the two cap-34 triangle-rooted search trees.
+
+Proposition~\ref{prop:certificate} and the two accepted certificate streams show that neither rooted tree contains a completed state.  This contradiction proves the theorem.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:70}]
+By Theorem~\ref{thm:main}, a cubic bipartite counterexample cannot have at most 68 vertices.  A cubic bipartite graph has even order because its two bipartition classes have equal size.  Hence the next possible order is at least 70.
+\end{proof}
+
+\section{Reproducibility and provenance}\label{sec:repro}
+
+The reference upstream implementation is the triangle-rooted search distributed with Tranquilli~\cite{tranquilli2026}.  The source used for direct reproduction is anchored to the immutable commit
+\begin{center}
+\texttt{67adc92d31d5d1edfbd0a7b845dc232e31c412cd}.
+\end{center}
+A fresh Git checkout of this commit was obtained in a clean Ubuntu 24.04 WSL environment.  The working tree was clean and the upstream SHA-256 manifest verification succeeded.  The SHA-256 digest of the relevant upstream search source \texttt{triangle\_root\_universal\_search.cpp} is
+\begin{center}
+\texttt{e778648bc3d5b0a19c860bec1371a542c464652693c2cbc4c2cd5ef05f314f41}.
+\end{center}
+The source was compiled directly from the fresh checkout with \texttt{-DSIDE=34}.  The resulting computation reproduced all entries of Table~\ref{tab:counts} exactly and reproduced the decision-transcript hashes
+\begin{align*}
+R_1:&\quad \texttt{db548be2919a7f8a8b28c5ded67aa622779dd3e22192ee8a2a1e065f8c07b4c5},\\
+R_2:&\quad \texttt{c2e03a0f97ea3c649a5feaf4d4145b229da6f56aa31b8ebbdb8b769b18848607}.
+\end{align*}
+
+The static-certificate generator and verifier used here are project-specific additions rather than components of the upstream release.  The complete certificate artifact was verified from a fresh copy under Ubuntu 24.04 with GCC 13.3.0: the verification script checked the manifest, rebuilt the verifier, accepted both certificate streams with the exact expected counts, and terminated with zero solutions for both roots.
+
+The packaged artifact SHA-256 is
+\begin{center}
+\texttt{32558c65679736fb2ff75b67b2d75a85a2b7b91e6dde5d15b06c3a9b59f0d7de}.
+\end{center}
+
+The source code, verification scripts, reproduction logs, proof notes, and certificate artifact accompanying this paper are available at
+\begin{center}
+\url{https://github.com/qacqac2/erdos-gyarfas-cubic-bipartite-70-bound}.
+\end{center}
+
+\section{Trust boundary and AI assistance}\label{sec:trust}
+
+\subsection{Trust boundary}
+
+The static certificate substantially reduces the computation that must be trusted.  The original depth-first search is not trusted merely because it prints a zero-solution count: the certificate verifier reconstructs the proposal schedule and checks local witnesses independently.  Nevertheless, this is not a proof-assistant formalization.  The conventional trusted computing base includes the mathematical specification encoded by the verifier, the verifier source code, the compiler and runtime, the operating system and hardware used for verification, and SHA-256 for artifact identity.  The original search program and certificate generator are not required to be trusted for the finite-exhaustion claim once the certificate streams have been accepted by the verifier.  The exhaustion is therefore certificate-checked and independently executable, but not formally verified from first principles.
+
+\subsection{AI assistance}
+
+Generative AI tools were used for exploratory reasoning, literature search, source-code interpretation, proof auditing, adversarial review, artifact design, and manuscript preparation.  No AI-generated output is treated as mathematical or computational evidence.  The claims supporting Theorem~\ref{thm:main} are reduced to explicit mathematical arguments, immutable source identity, reproducible computations, static certificate data, and independently executable verification.  Responsibility for the mathematical statements, released artifact, and manuscript rests with the human author.
+
+\section{Concluding remarks}\label{sec:conclusion}
+
+The argument raises the lower bound for cubic bipartite counterexamples to the Erd\H{o}s--Gy\'arf\'as conjecture from 60 to 70.  The role of 70 is structural rather than merely computational.  Below 70 vertices, the O'Keefe--Wong girth-10 theorem forces a \(\Csix\) once \(\Cfour\) and \(\Ceight\) are excluded, making the two triangle-rooted search trees complete throughout the present range.
+
+At order 70 this forcing argument no longer applies: cubic graphs of girth 10 exist at that order.  The present proof therefore deliberately makes no statement about the 70-vertex case or beyond.  Further progress would require additional structure for the girth-10 regime or a different exhaustive-search framework.
+
+\printbibliography
+
+\end{document}

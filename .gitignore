@@ -1,0 +1,23 @@
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.fls
+*.fdb_latexmk
+
+# TeXstudio / editor temporary files
+*.txss
+*.bak
+*.tmp
+*~
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
