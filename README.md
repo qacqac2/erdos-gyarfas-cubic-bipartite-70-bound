@@ -520,10 +520,3 @@ A software/documentation license has not yet been finalized.
 Please do not assume reuse rights beyond those granted by the upstream sources until a license is added to this repository.
 
 ---
-
-
-## Archival record
-
-Version 1.0.0 of the reproducibility artifact is permanently archived on Zenodo:
-
-**DOI:** [10.5281/zenodo.21981786](https://doi.org/10.5281/zenodo.21981786)
